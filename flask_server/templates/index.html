@@ -10,8 +10,8 @@
 </form>
 
 <form role="form" method="POST" id="post-form-multi" onsubmit="return false">
-  <div class="form-group">
-    <input type="text" class="form-control input-lg" name="image_url" placeholder="enter a list of image urls separated by newlines..." required></center>
+  <div class="form-group-lg">
+      <textarea name="image_urls" rows="10" cols="50" form="post-form-multi" placeholder="Enter a list of image urls separated by new lines" required></textarea>
   </div>
   <button type="submit" class="btn btn-lg btn-block btn-success boom" id="search">Submit!</button>
 </form>
@@ -24,6 +24,5 @@
 <br><br>
 
 <div id="retry"><a href="">Again?</a></div>
-
 
 {% endblock %}

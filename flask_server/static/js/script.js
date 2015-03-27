@@ -20,6 +20,7 @@ $(function() {
       success: function(result) {
         console.log(result);
         $("#post-form").hide()
+        $("#post-form-multi").hide()
         $("#retry").show()
         $("#results").show()
         $("#results").html("<h3>Image</h3><img src="+
@@ -35,7 +36,7 @@ $(function() {
   // event handler for multi-image form submission
   $('#post-form-multi').on('submit', function(event){
       $("results").hide()
-      value = $('input[name="image_urls"]').val().split("\n");
+      value = $('textarea[name="image_urls"]').val().split("\n");
       $.ajax({
           type: "POST",
           url: "v1/ocr_multi",
@@ -44,15 +45,16 @@ $(function() {
           data: JSON.stringify({ "image_urls" : value }),
           success: function(result) {
               console.log(result);
+              $("#post-form").hide()
               $("#post-form-multi").hide()
-              $("retry").show()
+              $("#retry").show()
               $("#results").show()
               var res = "";
               for (i=0; i<value.length; i++) {
-                  res.concat("<img src="+
+                  res = res.concat("<img src="+
                     value[i]+" style='max-width: 400px;'><br><h3>Results</h3><div class='well'>"+
-                    result["output"][i]+"</div>");
-              }
+                    result["output"][i]+"</div>\n");
+              };
               $("#results").html(res);
           },
           error: function(error) {
@@ -65,6 +67,7 @@ $(function() {
   $('#retry').on('click', function(){
     $("input").val('').show();
     $("#post-form").show()
+    $("#post-form-multi").show()
     $("#retry").hide()
     $('#results').html('');
   });
