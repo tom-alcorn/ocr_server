@@ -26,6 +26,18 @@ def ocr():
         )
 
 
+@app.route('/v{}/ocr_multi'.format(_VERSION), methods=["POST"])
+def ocr_multi():
+    try:
+        urls = request.json['image_urls']
+        output = [process_image(url) for url in urls]
+        return jsonify({"output": output})
+    except:
+        return jsonify(
+            {"error": "Did you mean to send: {'image_url': 'some_jpeg_url'}"}
+        )
+
+
 @app.errorhandler(500)
 def internal_error(error):
     print str(error)  # ghetto logging
