@@ -5,4 +5,6 @@
 LOGFILE=/home/apprunner/ocr/ocr_server/start_server.log
 touch $LOGFILE
 
-python /home/apprunner/ocr/ocr_server/flask_server/app.py > $LOGFILE 2>&1
+nohup python /home/apprunner/ocr/ocr_server/flask_server/app.py > $LOGFILE 2>&1 &
+
+exit
