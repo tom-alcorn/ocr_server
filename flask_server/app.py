@@ -2,6 +2,8 @@ import os
 import logging
 from logging import Formatter, FileHandler
 from flask import Flask, request, jsonify, render_template
+import string
+from multiprocessing import Pool
 
 from ocr import process_image
 
@@ -17,24 +19,30 @@ def main():
 @app.route('/v{}/ocr'.format(_VERSION), methods=["POST"])
 def ocr():
     try:
-        url = request.json['image_url']
-        output = process_image(url)
-        return jsonify({"output": output})
-    except:
-        return jsonify(
-            {"error": "Did you mean to send: {'image_url': 'some_jpeg_url'}"}
-        )
-
-
-@app.route('/v{}/ocr_multi'.format(_VERSION), methods=["POST"])
-def ocr_multi():
-    try:
         urls = request.json['image_urls']
         output = [process_image(url) for url in urls]
         return jsonify({"output": output})
     except:
         return jsonify(
-            {"error": "Did you mean to send: {'image_url': 'some_jpeg_url'}"}
+            {"error": "Did you mean to send: {'image_url': 'some_img_url'}"}
+        )
+
+
+@app.route('/v{}/ocr_kw'.format(_VERSION), methods=["POST"])
+def ocr_kw():
+    try:
+        urls = request.json['image_urls']
+        keywords = request.json['keywords']
+        p = Pool()
+        texts = p.map(process_image, urls)
+        # texts = [process_image(url) for url in urls]
+        texts = [''.join(filter(lambda c: c in string.printable, text)) for text in texts]
+        contains = [any(kw in text for kw in keywords) for text in texts]
+        contains_dict = dict(zip(texts, contains))
+        return jsonify({"output": texts, "contains_kw": contains_dict})
+    except Exception as e:
+        return jsonify(
+            {"error": str(e)}
         )
 
 
