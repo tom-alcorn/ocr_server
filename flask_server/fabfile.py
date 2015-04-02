@@ -18,7 +18,7 @@ def deploy():
 
 
 def run_server():
-    run("bash %s/start_server.sh &" % code_dir)
+    run("bash %s/start_server.sh" % code_dir)
     check_log()
 
 
